@@ -1,6 +1,44 @@
 // ===== Intersection Observer for Scroll Animations =====
 document.addEventListener('DOMContentLoaded', () => {
 
+  // ===== Dark/Light Theme Toggle =====
+  const themeToggle = document.getElementById('theme-toggle');
+  const currentTheme = localStorage.getItem('theme') || 'dark';
+
+  if (currentTheme === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+  } else {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+
+  themeToggle.addEventListener('click', () => {
+    let theme = document.documentElement.getAttribute('data-theme');
+    if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      localStorage.setItem('theme', 'light');
+    }
+  });
+
+  // ===== Skill Bars Animation =====
+  const skillFills = document.querySelectorAll('.skill-bar-fill');
+  const skillObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const fill = entry.target;
+        const percent = fill.getAttribute('data-percent');
+        fill.style.width = `${percent}%`;
+        skillObserver.unobserve(fill);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  skillFills.forEach(fill => {
+    skillObserver.observe(fill);
+  });
+
   // Animate cards on scroll into view
   const cards = document.querySelectorAll('.card');
   const observerOptions = {
